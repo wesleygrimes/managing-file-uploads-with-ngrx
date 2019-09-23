@@ -1,0 +1,287 @@
+{
+  "version": 1,
+  "projects": {
+    "real-world-app": {
+      "projectType": "application",
+      "schematics": {},
+      "root": "apps/real-world-app",
+      "sourceRoot": "apps/real-world-app/src",
+      "prefix": "real-world-app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/apps/real-world-app",
+            "index": "apps/real-world-app/src/index.html",
+            "main": "apps/real-world-app/src/main.ts",
+            "polyfills": "apps/real-world-app/src/polyfills.ts",
+            "tsConfig": "apps/real-world-app/tsconfig.app.json",
+            "aot": false,
+            "assets": [
+              "apps/real-world-app/src/favicon.ico",
+              "apps/real-world-app/src/assets"
+            ],
+            "styles": ["apps/real-world-app/src/styles.css"],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/real-world-app/src/environments/environment.ts",
+                  "with": "apps/real-world-app/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "real-world-app:build",
+            "proxyConfig": "apps/real-world-app/proxy.conf.json"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "real-world-app:build:production"
+            }
+          }
+        },
+        "serve-with-api": {
+          "builder": "@angular-devkit/architect:allOf",
+          "options": {
+            "targets": [
+              {
+                "target": "real-world-app:serve"
+              },
+              {
+                "target": "api:serve"
+              }
+            ]
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "real-world-app:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "apps/real-world-app/tsconfig.app.json",
+              "apps/real-world-app/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!apps/real-world-app/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/real-world-app/jest.config.js",
+            "tsConfig": "apps/real-world-app/tsconfig.spec.json",
+            "setupFile": "apps/real-world-app/src/test-setup.ts"
+          }
+        }
+      }
+    },
+    "real-world-app-e2e": {
+      "root": "apps/real-world-app-e2e",
+      "sourceRoot": "apps/real-world-app-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/real-world-app-e2e/cypress.json",
+            "tsConfig": "apps/real-world-app-e2e/tsconfig.e2e.json",
+            "devServerTarget": "real-world-app:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "real-world-app:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/real-world-app-e2e/tsconfig.e2e.json"],
+            "exclude": ["**/node_modules/**", "!apps/real-world-app-e2e/**"]
+          }
+        }
+      }
+    },
+    "api": {
+      "root": "apps/api",
+      "sourceRoot": "apps/api/src",
+      "projectType": "application",
+      "prefix": "api",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "options": {
+            "outputPath": "dist/apps/api",
+            "main": "apps/api/src/main.ts",
+            "tsConfig": "apps/api/tsconfig.app.json",
+            "assets": ["apps/api/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/api/src/environments/environment.ts",
+                  "with": "apps/api/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "api:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "apps/api/tsconfig.app.json",
+              "apps/api/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!apps/api/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/api/jest.config.js",
+            "tsConfig": "apps/api/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "shared-models": {
+      "root": "libs/shared-models",
+      "sourceRoot": "libs/shared-models/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/shared-models/tsconfig.lib.json",
+              "libs/shared-models/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/shared-models/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/shared-models/jest.config.js",
+            "tsConfig": "libs/shared-models/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "file-upload": {
+      "projectType": "library",
+      "root": "libs/file-upload",
+      "sourceRoot": "libs/file-upload/src",
+      "prefix": "real-world-app",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/file-upload/tsconfig.lib.json",
+              "libs/file-upload/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/file-upload/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/file-upload/jest.config.js",
+            "tsConfig": "libs/file-upload/tsconfig.spec.json",
+            "setupFile": "libs/file-upload/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {}
+    },
+    "file-upload-data-access": {
+      "projectType": "library",
+      "root": "libs/file-upload-data-access",
+      "sourceRoot": "libs/file-upload-data-access/src",
+      "prefix": "real-world-app",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/file-upload-data-access/tsconfig.lib.json",
+              "libs/file-upload-data-access/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**",
+              "!libs/file-upload-data-access/**"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/file-upload-data-access/jest.config.js",
+            "tsConfig": "libs/file-upload-data-access/tsconfig.spec.json",
+            "setupFile": "libs/file-upload-data-access/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {}
+    }
+  },
+  "cli": {
+    "defaultCollection": "@nrwl/angular"
+  },
+  "schematics": {
+    "@nrwl/angular:application": {
+      "unitTestRunner": "jest",
+      "e2eTestRunner": "cypress"
+    },
+    "@nrwl/angular:library": {
+      "unitTestRunner": "jest"
+    }
+  },
+  "defaultProject": "real-world-app"
+}

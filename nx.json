@@ -1,0 +1,30 @@
+{
+  "npmScope": "real-world-app",
+  "implicitDependencies": {
+    "angular.json": "*",
+    "package.json": "*",
+    "tsconfig.json": "*",
+    "tslint.json": "*",
+    "nx.json": "*"
+  },
+  "projects": {
+    "real-world-app-e2e": {
+      "tags": []
+    },
+    "real-world-app": {
+      "tags": []
+    },
+    "api": {
+      "tags": []
+    },
+    "shared-models": {
+      "tags": []
+    },
+    "file-upload": {
+      "tags": []
+    },
+    "file-upload-data-access": {
+      "tags": []
+    }
+  }
+}

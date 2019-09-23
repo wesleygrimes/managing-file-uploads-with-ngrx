@@ -1,0 +1,10 @@
+<div>
+  <fa-icon
+    *ngIf="icon"
+    [spin]="spin"
+    [icon]="icon"
+    [title]="errorMessage"
+    [class]="colorClass"
+  ></fa-icon>
+  <span *ngIf="file.progress && file.progress !== 0">{{ file.progress }}%</span>
+</div>
