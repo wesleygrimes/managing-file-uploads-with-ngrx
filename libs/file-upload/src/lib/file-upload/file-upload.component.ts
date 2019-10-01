@@ -13,7 +13,6 @@ import { FileUploadSelectors, FileUploadUIActions } from '../state';
 })
 export class FileUploadComponent {
   uploadQueue$ = this.store.select(FileUploadSelectors.selectAllFileUploads);
-  fileCount$ = this.store.select(FileUploadSelectors.selectTotalFilesInQueue);
 
   constructor(private store: Store<{}>) {}
 
