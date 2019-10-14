@@ -1,13 +1,9 @@
 import {
-  FileUploadModel,
-  FileUploadStatus,
-  FileViewModel
-} from '@app/shared-models';
-import {
   faCheck,
   faExclamationCircle
 } from '@fortawesome/free-solid-svg-icons';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
+import { FileUploadModel, FileUploadStatus, FileViewModel } from '../models';
 import {
   featureAdapter,
   fileUploadFeatureKey,

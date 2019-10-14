@@ -1,5 +1,5 @@
-import { FileUploadModel } from '@app/shared-models';
 import { createAction, props } from '@ngrx/store';
+import { FileUploadModel } from '../models';
 
 export const enqueueFile = createAction(
   '[File Upload Form] Enqueue File',

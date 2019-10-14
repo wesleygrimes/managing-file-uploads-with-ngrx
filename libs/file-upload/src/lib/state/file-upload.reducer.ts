@@ -1,6 +1,6 @@
-import { FileUploadModel, FileUploadStatus } from '@app/shared-models';
 import { createEntityAdapter, EntityState } from '@ngrx/entity';
 import { Action, createReducer, on } from '@ngrx/store';
+import { FileUploadModel, FileUploadStatus } from '../models';
 import * as FileUploadAPIActions from './file-upload-api.actions';
 import * as FileUploadUIActions from './file-upload-ui.actions';
 

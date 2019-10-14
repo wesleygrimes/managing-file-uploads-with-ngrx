@@ -2,28 +2,28 @@
   <div class="form-row">
     <div class="form-group col-md-8">
       <button
-        class="btn btn-outline-primary browse-files"
+        class="btn btn-secondary browse-files"
         (click)="openFileDialog()"
         type="button"
       >
         <label>Browse Files</label>
       </button>
       <button
-        class="btn btn-outline-primary upload-files"
+        class="btn btn-secondary upload-files"
         (click)="uploadFiles()"
         type="button"
       >
         <label>Upload Files</label>
       </button>
       <button
-        class="btn btn-outline-primary clear-files"
+        class="btn btn-secondary clear-files"
         (click)="clearFiles()"
         type="button"
       >
         <label>Clear Files</label>
       </button>
       <button
-        class="btn btn-outline-primary cancel-upload"
+        class="btn btn-secondary cancel-upload"
         (click)="cancelUpload()"
         type="button"
       >
@@ -41,7 +41,7 @@
 
   <div class="table-responsive" *ngIf="(fileUploadQueue$ | async) as files">
     <table *ngIf="files.length > 0; else noFilesStaged" class="table file-list">
-      <thead class="thead-dark">
+      <thead class="thead-light">
         <tr>
           <th class="file-name">File Name</th>
           <th class="file-size">File Size</th>
@@ -65,7 +65,6 @@
               ><ngb-progressbar
                 type="info"
                 [value]="file.progress"
-                [striped]="true"
                 height="30px"
                 *ngIf="file.showProgress"
                 >{{ file.progress }}%</ngb-progressbar
@@ -91,16 +90,11 @@
     </table>
     <ng-template #noFilesStaged>
       <table class="table file-list">
-        <thead class="thead-dark">
+        <thead class="thead-light">
           <tr>
-            <th class="file-name">File Name</th>
+            <th class="file-name">No files chosen</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td>No files chosen</td>
-          </tr>
-        </tbody>
       </table>
     </ng-template>
   </div>

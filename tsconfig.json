@@ -16,7 +16,6 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@app/shared-models": ["libs/shared-models/src/index.ts"],
       "@app/file-upload": ["libs/file-upload/src/index.ts"]
     }
   },
