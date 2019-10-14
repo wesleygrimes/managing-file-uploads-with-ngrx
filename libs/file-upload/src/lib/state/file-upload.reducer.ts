@@ -43,12 +43,6 @@ const fileUploadReducer = createReducer(
   on(FileUploadUIActions.removeFileFromQueue, (state, { id }) =>
     featureAdapter.removeOne(id, state)
   ),
-  on(FileUploadUIActions.uploadRequest, (state, { fileToUpload }) =>
-    featureAdapter.updateOne(
-      { id: fileToUpload.id, changes: { status: FileUploadStatus.Requested } },
-      state
-    )
-  ),
   on(FileUploadUIActions.cancelUpload, _ => ({
     ...initialState
   })),
@@ -72,7 +66,6 @@ const fileUploadReducer = createReducer(
     )
   ),
   on(
-    FileUploadHTTPActions.httpEventDownloadProgressEvent,
     FileUploadHTTPActions.httpEventUploadProgressEvent,
     (state, { id, event }) =>
       featureAdapter.updateOne(
@@ -86,32 +79,34 @@ const fileUploadReducer = createReducer(
         state
       )
   ),
-  on(
-    FileUploadHTTPActions.httpResponseEvent,
-    FileUploadHTTPActions.httpResponseHeaderEvent,
-    (state, { id, event }) => {
-      if (event.status === 200) {
-        return featureAdapter.updateOne(
-          {
-            id,
-            changes: { status: FileUploadStatus.Completed, progress: 100 }
-          },
-          state
-        );
-      } else {
-        return featureAdapter.updateOne(
-          {
-            id,
-            changes: {
-              status: FileUploadStatus.Failed,
-              progress: null,
-              error: event.statusText
-            }
-          },
-          state
-        );
-      }
+  on(FileUploadHTTPActions.httpResponseEvent, (state, { id, event }) => {
+    if (event.status === 200) {
+      return featureAdapter.updateOne(
+        {
+          id,
+          changes: { status: FileUploadStatus.Completed, progress: 100 }
+        },
+        state
+      );
+    } else {
+      return featureAdapter.updateOne(
+        {
+          id,
+          changes: {
+            status: FileUploadStatus.Failed,
+            progress: null,
+            error: event.statusText
+          }
+        },
+        state
+      );
     }
+  }),
+  on(FileUploadAPIActions.uploadRequest, (state, { fileToUpload }) =>
+    featureAdapter.updateOne(
+      { id: fileToUpload.id, changes: { status: FileUploadStatus.Requested } },
+      state
+    )
   ),
   on(FileUploadAPIActions.uploadFailure, (state, { id, error }) =>
     featureAdapter.updateOne(

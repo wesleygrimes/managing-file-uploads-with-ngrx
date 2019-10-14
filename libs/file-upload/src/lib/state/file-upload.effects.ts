@@ -33,7 +33,7 @@ export class FileUploadEffects {
       ),
       switchMap(([_, filesToUpload]) =>
         filesToUpload.map(fileToUpload =>
-          FileUploadUIActions.uploadRequest({ fileToUpload })
+          FileUploadAPIActions.uploadRequest({ fileToUpload })
         )
       )
     )
@@ -41,7 +41,7 @@ export class FileUploadEffects {
 
   uploadEffect$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(FileUploadUIActions.uploadRequest),
+      ofType(FileUploadAPIActions.uploadRequest),
       mergeMap(({ fileToUpload }) =>
         this.fileUploadService.uploadFile(fileToUpload.rawFile).pipe(
           takeUntil(
@@ -63,7 +63,7 @@ export class FileUploadEffects {
 
   // uploadWithErrorEffect$ = createEffect(() =>
   //   this.actions$.pipe(
-  //     ofType(FileUploadUIActions.uploadRequest),
+  //     ofType(FileUploadAPIActions.uploadRequest),
   //     mergeMap(({ fileToUpload }) =>
   //       this.fileUploadService.uploadFileError(fileToUpload.rawFile).pipe(
   //         takeUntil(
@@ -86,12 +86,8 @@ export class FileUploadEffects {
   private mapActionToHttpStatusEvent(id: number, event: HttpEvent<any>) {
     const eventToActionMap = {
       [HttpEventType.Sent]: FileUploadHTTPActions.httpSentEvent,
-      [HttpEventType.DownloadProgress]:
-        FileUploadHTTPActions.httpEventDownloadProgressEvent,
       [HttpEventType.UploadProgress]:
         FileUploadHTTPActions.httpEventUploadProgressEvent,
-      [HttpEventType.ResponseHeader]:
-        FileUploadHTTPActions.httpResponseHeaderEvent,
       [HttpEventType.Response]: FileUploadHTTPActions.httpResponseEvent
     };
 
