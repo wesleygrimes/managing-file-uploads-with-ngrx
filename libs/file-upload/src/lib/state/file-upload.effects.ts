@@ -2,7 +2,6 @@ import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
-import { FileUploadService } from '@real-world-app/file-upload-data-access';
 import { of } from 'rxjs';
 import {
   catchError,
@@ -13,6 +12,7 @@ import {
   withLatestFrom
 } from 'rxjs/operators';
 import { serializeError } from 'serialize-error';
+import { FileUploadService } from '../services';
 import * as FileUploadAPIActions from './file-upload-api.actions';
 import * as FileUploadUIActions from './file-upload-ui.actions';
 import * as FileUploadSelectors from './file-upload.selectors';
@@ -29,7 +29,7 @@ export class FileUploadEffects {
     this.actions$.pipe(
       ofType(FileUploadUIActions.processQueue, FileUploadUIActions.retryUpload),
       withLatestFrom(
-        this.store$.pipe(select(FileUploadSelectors.selectFilesInQueue))
+        this.store$.pipe(select(FileUploadSelectors.selectFilesReadyForUpload))
       ),
       switchMap(([_, filesToUpload]) =>
         filesToUpload.map(fileToUpload =>
@@ -51,7 +51,7 @@ export class FileUploadEffects {
           catchError(error =>
             of(
               FileUploadAPIActions.uploadFailure({
-                error: this.handleError(error),
+                error: serializeError(error).message,
                 id: fileToUpload.id
               })
             )
@@ -91,9 +91,5 @@ export class FileUploadEffects {
         });
       }
     }
-  }
-
-  private handleError(error: any) {
-    return serializeError(error).message;
   }
 }

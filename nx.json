@@ -1,5 +1,5 @@
 {
-  "npmScope": "real-world-app",
+  "npmScope": "app",
   "implicitDependencies": {
     "angular.json": "*",
     "package.json": "*",
@@ -8,10 +8,10 @@
     "nx.json": "*"
   },
   "projects": {
-    "real-world-app-e2e": {
+    "app-e2e": {
       "tags": []
     },
-    "real-world-app": {
+    "app": {
       "tags": []
     },
     "api": {
@@ -21,9 +21,6 @@
       "tags": []
     },
     "file-upload": {
-      "tags": []
-    },
-    "file-upload-data-access": {
       "tags": []
     }
   }

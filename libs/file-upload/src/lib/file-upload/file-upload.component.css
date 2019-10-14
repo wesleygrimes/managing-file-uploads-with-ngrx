@@ -1,3 +1,40 @@
+/* Container */
 .file-upload {
   margin-top: 10px;
+}
+
+/* Buttons */
+.upload-files,
+.clear-files,
+.cancel-upload {
+  margin-left: 10px;
+}
+
+.upload-files > label,
+.browse-files > label,
+.clear-files > label,
+.cancel-upload > label {
+  margin-bottom: 0;
+}
+
+/* File Status */
+.red {
+  color: red;
+}
+
+.black {
+  color: black;
+}
+
+.green {
+  color: green;
+}
+
+.file-status-progress {
+  margin-left: 5px;
+}
+
+/* Other */
+.file-input {
+  display: none;
 }

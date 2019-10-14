@@ -1,13 +1,107 @@
 <div class="file-upload">
-  <real-world-app-file-upload-form
-    (fileAdded)="enqueueFile($event)"
-    (upload)="uploadFiles()"
-    (clear)="clearFiles()"
-    (cancel)="cancelUpload($event)"
-  ></real-world-app-file-upload-form>
-  <real-world-app-file-upload-list
-    [files]="uploadQueue$ | async"
-    (remove)="removeFileFromQueue($event)"
-    (retry)="retryUpload($event)"
-  ></real-world-app-file-upload-list>
+  <div class="form-row">
+    <div class="form-group col-md-8">
+      <button
+        class="btn btn-outline-primary browse-files"
+        (click)="openFileDialog()"
+        type="button"
+      >
+        <label>Browse Files</label>
+      </button>
+      <button
+        class="btn btn-outline-primary upload-files"
+        (click)="uploadFiles()"
+        type="button"
+      >
+        <label>Upload Files</label>
+      </button>
+      <button
+        class="btn btn-outline-primary clear-files"
+        (click)="clearFiles()"
+        type="button"
+      >
+        <label>Clear Files</label>
+      </button>
+      <button
+        class="btn btn-outline-primary cancel-upload"
+        (click)="cancelUpload()"
+        type="button"
+      >
+        <label>Cancel Upload</label>
+      </button>
+      <input
+        #fileInput
+        type="file"
+        (change)="onFileChange($event)"
+        multiple
+        class="file-input"
+      />
+    </div>
+  </div>
+
+  <div class="table-responsive" *ngIf="(fileUploadQueue$ | async) as files">
+    <table *ngIf="files.length > 0; else noFilesStaged" class="table file-list">
+      <thead class="thead-dark">
+        <tr>
+          <th class="file-name">File Name</th>
+          <th class="file-size">File Size</th>
+          <th class="file-status">Upload Status</th>
+          <th class="file-action"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let file of files">
+          <td>{{ file.fileName }}</td>
+          <td>{{ file.formattedFileSize }}</td>
+          <td>
+            <div>
+              <fa-icon
+                *ngIf="file.statusIcon"
+                [spin]="file.statusSpin"
+                [icon]="file.statusIcon"
+                [title]="file.errorMessage"
+                [class]="file.statusColorClass"
+              ></fa-icon
+              ><ngb-progressbar
+                type="info"
+                [value]="file.progress"
+                [striped]="true"
+                height="30px"
+                *ngIf="file.showProgress"
+                >{{ file.progress }}%</ngb-progressbar
+              >
+            </div>
+          </td>
+          <td>
+            <div class="file-action-buttons">
+              <fa-icon
+                *ngIf="file.canDelete"
+                (click)="removeFileFromQueue(file.id)"
+                [icon]="faTrashAlt"
+              ></fa-icon>
+              <fa-icon
+                *ngIf="file.canRetry"
+                [icon]="faUndo"
+                (click)="retryUpload(file.id)"
+              ></fa-icon>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <ng-template #noFilesStaged>
+      <table class="table file-list">
+        <thead class="thead-dark">
+          <tr>
+            <th class="file-name">File Name</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>No files chosen</td>
+          </tr>
+        </tbody>
+      </table>
+    </ng-template>
+  </div>
 </div>

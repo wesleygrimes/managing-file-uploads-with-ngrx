@@ -1,33 +1,37 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
+import { faTrashAlt, faUndo } from '@fortawesome/free-solid-svg-icons';
 import { Store } from '@ngrx/store';
-import {
-  FileUploadModel,
-  FileUploadStatus
-} from '@real-world-app/shared-models';
 import { FileUploadSelectors, FileUploadUIActions } from '../state';
 
 @Component({
-  selector: 'real-world-app-file-upload',
+  selector: 'app-file-upload',
   templateUrl: './file-upload.component.html',
   styleUrls: ['./file-upload.component.css']
 })
 export class FileUploadComponent {
-  uploadQueue$ = this.store.select(FileUploadSelectors.selectAllFileUploads);
+  @ViewChild('fileInput', { static: true }) fileInput: ElementRef;
+
+  fileUploadQueue$ = this.store.select(
+    FileUploadSelectors.selectFileUploadQueue
+  );
+
+  faTrashAlt = faTrashAlt;
+  faUndo = faUndo;
 
   constructor(private store: Store<{}>) {}
 
-  enqueueFile(file: File) {
-    const fileToUpload: FileUploadModel = {
-      fileName: file.name,
-      fileSize: file.size,
-      fileType: file.type,
-      rawFile: file,
-      id: Date.now(),
-      error: null,
-      progress: null,
-      status: FileUploadStatus.Ready
-    };
-    this.store.dispatch(FileUploadUIActions.enqueueFile({ fileToUpload }));
+  openFileDialog(): void {
+    this.fileInput.nativeElement.click();
+  }
+
+  onFileChange(event) {
+    const files: File[] = event.target.files ? [...event.target.files] : [];
+
+    files.forEach(file =>
+      this.store.dispatch(FileUploadUIActions.enqueueFile({ file }))
+    );
+
+    event.target.value = '';
   }
 
   removeFileFromQueue(id: number) {
