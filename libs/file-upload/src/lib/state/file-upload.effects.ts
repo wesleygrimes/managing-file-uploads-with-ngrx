@@ -61,6 +61,28 @@ export class FileUploadEffects {
     )
   );
 
+  // uploadWithErrorEffect$ = createEffect(() =>
+  //   this.actions$.pipe(
+  //     ofType(FileUploadUIActions.uploadRequest),
+  //     mergeMap(({ fileToUpload }) =>
+  //       this.fileUploadService.uploadFileError(fileToUpload.rawFile).pipe(
+  //         takeUntil(
+  //           this.actions$.pipe(ofType(FileUploadUIActions.cancelUpload))
+  //         ),
+  //         map(event => this.getActionFromHttpEvent(event, fileToUpload.id)),
+  //         catchError(error =>
+  //           of(
+  //             FileUploadAPIActions.uploadFailure({
+  //               error: serializeError(error).message,
+  //               id: fileToUpload.id
+  //             })
+  //           )
+  //         )
+  //       )
+  //     )
+  //   )
+  // );
+
   private getActionFromHttpEvent(event: HttpEvent<any>, id: number) {
     switch (event.type) {
       case HttpEventType.Sent: {

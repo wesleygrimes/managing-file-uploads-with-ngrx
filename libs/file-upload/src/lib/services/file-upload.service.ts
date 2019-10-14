@@ -25,4 +25,17 @@ export class FileUploadService {
 
     return this.http.request(req);
   }
+
+  uploadFileError(file: File) {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const httpOptions = {
+      reportProgress: true
+    };
+
+    const req = new HttpRequest('POST', ``, formData, httpOptions);
+
+    return this.http.request(req);
+  }
 }
