@@ -20,11 +20,6 @@ export const selectAllFileUploads: (
 
 export const selectFilesInQueue = createSelector(
   selectAllFileUploads,
-  (allUploads: FileUploadModel[]) => {
-    if (allUploads) {
-      return allUploads.filter(f => f.status === FileUploadStatus.Ready);
-    } else {
-      return null;
-    }
-  }
+  (allUploads: FileUploadModel[]) =>
+    allUploads && allUploads.filter(f => f.status === FileUploadStatus.Ready)
 );
