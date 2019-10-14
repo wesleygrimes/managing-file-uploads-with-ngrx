@@ -13,6 +13,7 @@ import {
 } from 'rxjs/operators';
 import { FileUploadService } from '../services';
 import * as FileUploadAPIActions from './file-upload-api.actions';
+import * as FileUploadHTTPActions from './file-upload-http.actions';
 import * as FileUploadUIActions from './file-upload-ui.actions';
 import * as FileUploadSelectors from './file-upload.selectors';
 
@@ -46,7 +47,7 @@ export class FileUploadEffects {
           takeUntil(
             this.actions$.pipe(ofType(FileUploadUIActions.cancelUpload))
           ),
-          map(event => this.getActionFromHttpEvent(event, fileToUpload.id)),
+          map(event => this.mapActionToHttpStatusEvent(fileToUpload.id, event)),
           catchError(error =>
             of(
               FileUploadAPIActions.uploadFailure({
@@ -68,7 +69,7 @@ export class FileUploadEffects {
   //         takeUntil(
   //           this.actions$.pipe(ofType(FileUploadUIActions.cancelUpload))
   //         ),
-  //         map(event => this.getActionFromHttpEvent(event, fileToUpload.id)),
+  //         map(event => this.mapActionToHttpStatusEvent(fileToUpload.id, event)),
   //         catchError(error =>
   //           of(
   //             FileUploadAPIActions.uploadFailure({
@@ -82,35 +83,20 @@ export class FileUploadEffects {
   //   )
   // );
 
-  private getActionFromHttpEvent(event: HttpEvent<any>, id: number) {
-    switch (event.type) {
-      case HttpEventType.Sent: {
-        return FileUploadAPIActions.uploadStarted({ id });
-      }
-      case HttpEventType.DownloadProgress:
-      case HttpEventType.UploadProgress: {
-        return FileUploadAPIActions.uploadProgress({
-          id,
-          progress: Math.round((100 * event.loaded) / event.total)
-        });
-      }
-      case HttpEventType.ResponseHeader:
-      case HttpEventType.Response: {
-        if (event.status === 200) {
-          return FileUploadAPIActions.uploadCompleted({ id });
-        } else {
-          return FileUploadAPIActions.uploadFailure({
-            id,
-            error: event.statusText
-          });
-        }
-      }
-      default: {
-        return FileUploadAPIActions.uploadFailure({
-          id,
-          error: `Unknown Event: ${JSON.stringify(event)}`
-        });
-      }
-    }
+  private mapActionToHttpStatusEvent(id: number, event: HttpEvent<any>) {
+    const eventToActionMap = {
+      [HttpEventType.Sent]: FileUploadHTTPActions.httpSentEvent,
+      [HttpEventType.DownloadProgress]:
+        FileUploadHTTPActions.httpEventDownloadProgressEvent,
+      [HttpEventType.UploadProgress]:
+        FileUploadHTTPActions.httpEventUploadProgressEvent,
+      [HttpEventType.ResponseHeader]:
+        FileUploadHTTPActions.httpResponseHeaderEvent,
+      [HttpEventType.Response]: FileUploadHTTPActions.httpResponseEvent
+    };
+
+    const httpEventActionCreator = eventToActionMap[event.type];
+
+    return httpEventActionCreator({ id, event });
   }
 }
