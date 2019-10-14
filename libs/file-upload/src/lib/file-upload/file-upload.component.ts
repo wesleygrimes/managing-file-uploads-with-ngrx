@@ -1,7 +1,7 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { faTrashAlt, faUndo } from '@fortawesome/free-solid-svg-icons';
 import { Store } from '@ngrx/store';
-import { FileUploadSelectors, FileUploadUIActions } from '../state';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-file-upload',
@@ -9,48 +9,22 @@ import { FileUploadSelectors, FileUploadUIActions } from '../state';
   styleUrls: ['./file-upload.component.css']
 })
 export class FileUploadComponent {
-  @ViewChild('fileInput', { static: true }) fileInput: ElementRef;
-
-  fileUploadQueue$ = this.store.select(
-    FileUploadSelectors.selectFileUploadQueue
-  );
+  fileUploadQueue$ = of([]); // f1
 
   faTrashAlt = faTrashAlt;
   faUndo = faUndo;
 
   constructor(private store: Store<{}>) {}
 
-  openFileDialog(): void {
-    this.fileInput.nativeElement.click();
-  }
+  onFileChange(event) {} // f2
 
-  onFileChange(event) {
-    const files: File[] = event.target.files ? [...event.target.files] : [];
+  removeFileFromQueue(id: number) {} // f3
 
-    files.forEach(file =>
-      this.store.dispatch(FileUploadUIActions.enqueueFile({ file }))
-    );
+  retryUpload(id: number) {} // f4
 
-    event.target.value = '';
-  }
+  cancelUpload() {} // f5
 
-  removeFileFromQueue(id: number) {
-    this.store.dispatch(FileUploadUIActions.removeFileFromQueue({ id }));
-  }
+  uploadFiles() {} // f6
 
-  retryUpload(id: number) {
-    this.store.dispatch(FileUploadUIActions.retryUpload({ id }));
-  }
-
-  cancelUpload() {
-    this.store.dispatch(FileUploadUIActions.cancelUpload());
-  }
-
-  uploadFiles() {
-    this.store.dispatch(FileUploadUIActions.processQueue());
-  }
-
-  clearFiles() {
-    this.store.dispatch(FileUploadUIActions.clearQueue());
-  }
+  clearFiles() {} // f7
 }
