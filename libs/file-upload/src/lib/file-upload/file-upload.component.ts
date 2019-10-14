@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { faTrashAlt, faUndo } from '@fortawesome/free-solid-svg-icons';
 import { Store } from '@ngrx/store';
-import { of } from 'rxjs';
+import { FileUploadSelectors, FileUploadUIActions } from '../state';
 
 @Component({
   selector: 'app-file-upload',
@@ -9,22 +9,42 @@ import { of } from 'rxjs';
   styleUrls: ['./file-upload.component.css']
 })
 export class FileUploadComponent {
-  fileUploadQueue$ = of([]); // f1
+  fileUploadQueue$ = this.store.select(
+    FileUploadSelectors.selectFileUploadQueue
+  );
 
   faTrashAlt = faTrashAlt;
   faUndo = faUndo;
 
   constructor(private store: Store<{}>) {}
 
-  onFileChange(event) {} // f2
+  onFileChange(event) {
+    const files: File[] = event.target.files ? [...event.target.files] : [];
 
-  removeFileFromQueue(id: number) {} // f3
+    files.forEach(file =>
+      this.store.dispatch(FileUploadUIActions.enqueueFile({ file }))
+    );
 
-  retryUpload(id: number) {} // f4
+    event.target.value = '';
+  }
 
-  cancelUpload() {} // f5
+  removeFileFromQueue(id: number) {
+    this.store.dispatch(FileUploadUIActions.removeFileFromQueue({ id }));
+  }
 
-  uploadFiles() {} // f6
+  retryUpload(id: number) {
+    this.store.dispatch(FileUploadUIActions.retryUpload({ id }));
+  }
 
-  clearFiles() {} // f7
+  cancelUpload() {
+    this.store.dispatch(FileUploadUIActions.cancelUpload());
+  }
+
+  uploadFiles() {
+    this.store.dispatch(FileUploadUIActions.processQueue());
+  }
+
+  clearFiles() {
+    this.store.dispatch(FileUploadUIActions.clearQueue());
+  }
 }
