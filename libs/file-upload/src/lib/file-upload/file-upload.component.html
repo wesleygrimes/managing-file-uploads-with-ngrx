@@ -57,18 +57,18 @@
             <div>
               <fa-icon
                 *ngIf="file.statusIcon"
-                [spin]="file.statusSpin"
                 [icon]="file.statusIcon"
-                [title]="file.errorMessage"
                 [class]="file.statusColorClass"
               ></fa-icon
               ><ngb-progressbar
-                type="info"
+                *ngIf="file.showProgress"
                 [value]="file.progress"
                 height="30px"
-                *ngIf="file.showProgress"
                 >{{ file.progress }}%</ngb-progressbar
               >
+              <span *ngIf="file.errorMessage" class="file-upload-error">{{
+                file.errorMessage
+              }}</span>
             </div>
           </td>
           <td>

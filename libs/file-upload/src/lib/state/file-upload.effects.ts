@@ -11,7 +11,6 @@ import {
   takeUntil,
   withLatestFrom
 } from 'rxjs/operators';
-import { serializeError } from 'serialize-error';
 import { FileUploadService } from '../services';
 import * as FileUploadAPIActions from './file-upload-api.actions';
 import * as FileUploadUIActions from './file-upload-ui.actions';
@@ -51,7 +50,7 @@ export class FileUploadEffects {
           catchError(error =>
             of(
               FileUploadAPIActions.uploadFailure({
-                error: serializeError(error).message,
+                error: error.message,
                 id: fileToUpload.id
               })
             )
@@ -73,7 +72,7 @@ export class FileUploadEffects {
   //         catchError(error =>
   //           of(
   //             FileUploadAPIActions.uploadFailure({
-  //               error: serializeError(error).message,
+  //               error: error.message,
   //               id: fileToUpload.id
   //             })
   //           )
