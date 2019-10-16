@@ -1,21 +1,14 @@
 import { createAction, props } from '@ngrx/store';
 
-export const enqueueFile = createAction(
-  '[File Upload Form] Enqueue File',
-  props<{ file: File }>()
+export const add = createAction('[Upload Form] Add', props<{ file: File }>());
+export const retry = createAction(
+  '[Upload Form] Retry',
+  props<{ id: string }>()
 );
-export const processQueue = createAction('[File Upload Form] Process Queue');
-export const clearQueue = createAction('[File Upload Form] Clear Queue');
-export const removeFileFromQueue = createAction(
-  '[File Upload Form] Remove File From Queue',
-  props<{ id: number }>()
+export const remove = createAction(
+  '[Upload Form] Remove',
+  props<{ id: string }>()
 );
-
-export const retryUpload = createAction(
-  '[File Upload Form] Retry File Upload',
-  props<{ id: number }>()
-);
-
-export const cancelUpload = createAction(
-  '[File Upload Form] Cancel File Upload'
-);
+export const process = createAction('[Upload Form] Process');
+export const clear = createAction('[Upload Form] Clear');
+export const cancel = createAction('[Upload Form] Cancel');

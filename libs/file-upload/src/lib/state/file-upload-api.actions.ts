@@ -1,23 +1,23 @@
 import { createAction, props } from '@ngrx/store';
 import { FileUploadModel } from '../models';
 
-export const uploadRequest = createAction(
-  '[File Upload Api] Upload Request',
+export const uploadRequested = createAction(
+  '[Upload Effect] Upload Requested',
   props<{ fileToUpload: FileUploadModel }>()
 );
-export const uploadFailure = createAction(
-  '[File Upload Api] Upload Failure',
-  props<{ id: number; error: string }>()
+export const uploadFailed = createAction(
+  '[Upload API] Upload Failed',
+  props<{ id: string; error: string }>()
 );
 export const uploadStarted = createAction(
-  '[File Upload Api] Upload Started',
-  props<{ id: number }>()
+  '[Upload API] Upload Started',
+  props<{ id: string }>()
 );
-export const uploadProgress = createAction(
-  '[File Upload Api] Upload Progress',
-  props<{ id: number; progress: number }>()
+export const uploadProgressed = createAction(
+  '[Upload API] Upload Progressed',
+  props<{ id: string; progress: number }>()
 );
 export const uploadCompleted = createAction(
-  '[File Upload Api] Upload Complete',
-  props<{ id: number }>()
+  '[Upload API] Upload Completed',
+  props<{ id: string }>()
 );

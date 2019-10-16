@@ -10,20 +10,14 @@ import {
   FileUploadState
 } from './file-upload.reducer';
 
-export const selectFileUploadState = createFeatureSelector<FileUploadState>(
+const selectFileUploadState = createFeatureSelector<FileUploadState>(
   fileUploadFeatureKey
 );
 
-export const selectAllFileUploads: (
+const selectAllFileUploads: (
   state: object
 ) => FileUploadModel[] = featureAdapter.getSelectors(selectFileUploadState)
   .selectAll;
-
-export const selectFilesReadyForUpload = createSelector(
-  selectAllFileUploads,
-  (allUploads: FileUploadModel[]) =>
-    allUploads && allUploads.filter(f => f.status === FileUploadStatus.Ready)
-);
 
 const getFileViewModelIcon = (fileStatus: FileUploadStatus) => {
   switch (fileStatus) {
@@ -70,6 +64,12 @@ const getFileViewModel = (file: FileUploadModel): FileViewModel => ({
   progress: file.progress,
   errorMessage: file.status === FileUploadStatus.Failed && file.error
 });
+
+export const selectFilesReadyForUpload = createSelector(
+  selectAllFileUploads,
+  (allUploads: FileUploadModel[]) =>
+    allUploads && allUploads.filter(f => f.status === FileUploadStatus.Ready)
+);
 
 export const selectFileUploadQueue = createSelector(
   selectAllFileUploads,

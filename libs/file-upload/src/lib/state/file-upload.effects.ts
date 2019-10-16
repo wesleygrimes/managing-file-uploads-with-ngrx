@@ -1,7 +1,7 @@
 import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { select, Store } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
 import {
   catchError,
@@ -21,18 +21,18 @@ export class FileUploadEffects {
   constructor(
     private fileUploadService: FileUploadService,
     private actions$: Actions,
-    private store$: Store<{}>
+    private store: Store<{}>
   ) {}
 
   processQueueEffect$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(FileUploadUIActions.processQueue, FileUploadUIActions.retryUpload),
+      ofType(FileUploadUIActions.process, FileUploadUIActions.retry),
       withLatestFrom(
-        this.store$.pipe(select(FileUploadSelectors.selectFilesReadyForUpload))
+        this.store.select(FileUploadSelectors.selectFilesReadyForUpload)
       ),
       switchMap(([_, filesToUpload]) =>
         filesToUpload.map(fileToUpload =>
-          FileUploadAPIActions.uploadRequest({ fileToUpload })
+          FileUploadAPIActions.uploadRequested({ fileToUpload })
         )
       )
     )
@@ -40,16 +40,14 @@ export class FileUploadEffects {
 
   uploadEffect$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(FileUploadAPIActions.uploadRequest),
+      ofType(FileUploadAPIActions.uploadRequested),
       mergeMap(({ fileToUpload }) =>
         this.fileUploadService.uploadFile(fileToUpload.rawFile).pipe(
-          takeUntil(
-            this.actions$.pipe(ofType(FileUploadUIActions.cancelUpload))
-          ),
+          takeUntil(this.actions$.pipe(ofType(FileUploadUIActions.cancel))),
           map(event => this.getActionFromHttpEvent(fileToUpload.id, event)),
           catchError(error =>
             of(
-              FileUploadAPIActions.uploadFailure({
+              FileUploadAPIActions.uploadFailed({
                 error: error.message,
                 id: fileToUpload.id
               })
@@ -82,14 +80,14 @@ export class FileUploadEffects {
   //   )
   // );
 
-  private getActionFromHttpEvent(id: number, event: HttpEvent<any>) {
+  private getActionFromHttpEvent(id: string, event: HttpEvent<any>) {
     switch (event.type) {
       case HttpEventType.Sent: {
         return FileUploadAPIActions.uploadStarted({ id });
       }
       case HttpEventType.DownloadProgress:
       case HttpEventType.UploadProgress: {
-        return FileUploadAPIActions.uploadProgress({
+        return FileUploadAPIActions.uploadProgressed({
           id,
           progress: Math.round((100 * event.loaded) / event.total)
         });
@@ -99,14 +97,14 @@ export class FileUploadEffects {
         if (event.status === 200) {
           return FileUploadAPIActions.uploadCompleted({ id });
         } else {
-          return FileUploadAPIActions.uploadFailure({
+          return FileUploadAPIActions.uploadFailed({
             id,
             error: event.statusText
           });
         }
       }
       default: {
-        return FileUploadAPIActions.uploadFailure({
+        return FileUploadAPIActions.uploadFailed({
           id,
           error: `Unknown Event: ${JSON.stringify(event)}`
         });

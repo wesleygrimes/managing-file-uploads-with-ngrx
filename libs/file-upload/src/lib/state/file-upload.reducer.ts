@@ -5,10 +5,7 @@ import { FileUploadModel, FileUploadStatus } from '../models';
 import * as FileUploadAPIActions from './file-upload-api.actions';
 import * as FileUploadUIActions from './file-upload-ui.actions';
 
-export interface FileUploadState extends EntityState<FileUploadModel> {
-  loaded: boolean;
-  error: string;
-}
+export interface FileUploadState extends EntityState<FileUploadModel> {}
 
 export const fileUploadFeatureKey = 'fileUpload';
 
@@ -16,14 +13,11 @@ export const featureAdapter = createEntityAdapter<FileUploadModel>({
   selectId: (model: FileUploadModel) => model.id
 });
 
-export const initialState: FileUploadState = featureAdapter.getInitialState({
-  loaded: false,
-  error: ''
-});
+export const initialState: FileUploadState = featureAdapter.getInitialState();
 
 const fileUploadReducer = createReducer(
   initialState,
-  on(FileUploadUIActions.enqueueFile, (state, { file }) =>
+  on(FileUploadUIActions.add, (state, { file }) =>
     featureAdapter.addOne(
       {
         id: uuid.v4(),
@@ -37,13 +31,13 @@ const fileUploadReducer = createReducer(
       state
     )
   ),
-  on(FileUploadUIActions.clearQueue, state =>
+  on(FileUploadUIActions.clear, state =>
     featureAdapter.removeAll({ ...state })
   ),
-  on(FileUploadUIActions.removeFileFromQueue, (state, { id }) =>
+  on(FileUploadUIActions.remove, (state, { id }) =>
     featureAdapter.removeOne(id, state)
   ),
-  on(FileUploadUIActions.retryUpload, (state, { id }) =>
+  on(FileUploadUIActions.retry, (state, { id }) =>
     featureAdapter.updateOne(
       {
         id,
@@ -56,7 +50,7 @@ const fileUploadReducer = createReducer(
       state
     )
   ),
-  on(FileUploadAPIActions.uploadRequest, (state, { fileToUpload }) =>
+  on(FileUploadAPIActions.uploadRequested, (state, { fileToUpload }) =>
     featureAdapter.updateOne(
       { id: fileToUpload.id, changes: { status: FileUploadStatus.Requested } },
       state
@@ -68,7 +62,7 @@ const fileUploadReducer = createReducer(
       state
     )
   ),
-  on(FileUploadAPIActions.uploadProgress, (state, { id, progress }) =>
+  on(FileUploadAPIActions.uploadProgressed, (state, { id, progress }) =>
     featureAdapter.updateOne(
       {
         id: id,
@@ -86,7 +80,7 @@ const fileUploadReducer = createReducer(
       state
     )
   ),
-  on(FileUploadAPIActions.uploadFailure, (state, { id, error }) =>
+  on(FileUploadAPIActions.uploadFailed, (state, { id, error }) =>
     featureAdapter.updateOne(
       {
         id: id,
@@ -99,7 +93,7 @@ const fileUploadReducer = createReducer(
       state
     )
   ),
-  on(FileUploadUIActions.cancelUpload, _ => ({
+  on(FileUploadUIActions.cancel, _ => ({
     ...initialState
   }))
 );

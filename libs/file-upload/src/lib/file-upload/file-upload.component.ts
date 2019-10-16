@@ -22,29 +22,29 @@ export class FileUploadComponent {
     const files: File[] = event.target.files ? [...event.target.files] : [];
 
     files.forEach(file =>
-      this.store.dispatch(FileUploadUIActions.enqueueFile({ file }))
+      this.store.dispatch(FileUploadUIActions.add({ file }))
     );
 
     event.target.value = '';
   }
 
-  removeFileFromQueue(id: number) {
-    this.store.dispatch(FileUploadUIActions.removeFileFromQueue({ id }));
+  removeFileFromQueue(id: string) {
+    this.store.dispatch(FileUploadUIActions.remove({ id }));
   }
 
-  retryUpload(id: number) {
-    this.store.dispatch(FileUploadUIActions.retryUpload({ id }));
+  retryUpload(id: string) {
+    this.store.dispatch(FileUploadUIActions.retry({ id }));
   }
 
   cancelUpload() {
-    this.store.dispatch(FileUploadUIActions.cancelUpload());
+    this.store.dispatch(FileUploadUIActions.cancel());
   }
 
   uploadFiles() {
-    this.store.dispatch(FileUploadUIActions.processQueue());
+    this.store.dispatch(FileUploadUIActions.process());
   }
 
   clearFiles() {
-    this.store.dispatch(FileUploadUIActions.clearQueue());
+    this.store.dispatch(FileUploadUIActions.clear());
   }
 }
