@@ -1,8 +1,8 @@
 import { createEntityAdapter, EntityState } from '@ngrx/entity';
 import { Action, createReducer, on } from '@ngrx/store';
+import * as uuid from 'uuid';
 import { FileUploadModel, FileUploadStatus } from '../models';
 import * as FileUploadAPIActions from './file-upload-api.actions';
-import * as FileUploadHTTPActions from './file-upload-http.actions';
 import * as FileUploadUIActions from './file-upload-ui.actions';
 
 export interface FileUploadState extends EntityState<FileUploadModel> {
@@ -26,7 +26,7 @@ const fileUploadReducer = createReducer(
   on(FileUploadUIActions.enqueueFile, (state, { file }) =>
     featureAdapter.addOne(
       {
-        id: Date.now(),
+        id: uuid.v4(),
         fileName: file.name,
         fileSize: file.size,
         rawFile: file,
@@ -43,9 +43,6 @@ const fileUploadReducer = createReducer(
   on(FileUploadUIActions.removeFileFromQueue, (state, { id }) =>
     featureAdapter.removeOne(id, state)
   ),
-  on(FileUploadUIActions.cancelUpload, _ => ({
-    ...initialState
-  })),
   on(FileUploadUIActions.retryUpload, (state, { id }) =>
     featureAdapter.updateOne(
       {
@@ -59,64 +56,52 @@ const fileUploadReducer = createReducer(
       state
     )
   ),
-  on(FileUploadHTTPActions.httpSentEvent, (state, { id }) =>
-    featureAdapter.updateOne(
-      { id: id, changes: { status: FileUploadStatus.Started, progress: 0 } },
-      state
-    )
-  ),
-  on(
-    FileUploadHTTPActions.httpEventUploadProgressEvent,
-    (state, { id, event }) =>
-      featureAdapter.updateOne(
-        {
-          id: id,
-          changes: {
-            status: FileUploadStatus.InProgress,
-            progress: Math.round((100 * event.loaded) / event.total)
-          }
-        },
-        state
-      )
-  ),
-  on(FileUploadHTTPActions.httpResponseEvent, (state, { id, event }) => {
-    if (event.status === 200) {
-      return featureAdapter.updateOne(
-        {
-          id,
-          changes: { status: FileUploadStatus.Completed, progress: 100 }
-        },
-        state
-      );
-    } else {
-      return featureAdapter.updateOne(
-        {
-          id,
-          changes: {
-            status: FileUploadStatus.Failed,
-            progress: null,
-            error: event.statusText
-          }
-        },
-        state
-      );
-    }
-  }),
   on(FileUploadAPIActions.uploadRequest, (state, { fileToUpload }) =>
     featureAdapter.updateOne(
       { id: fileToUpload.id, changes: { status: FileUploadStatus.Requested } },
       state
     )
   ),
-  on(FileUploadAPIActions.uploadFailure, (state, { id, error }) =>
+  on(FileUploadAPIActions.uploadStarted, (state, { id }) =>
+    featureAdapter.updateOne(
+      { id: id, changes: { status: FileUploadStatus.Started, progress: 0 } },
+      state
+    )
+  ),
+  on(FileUploadAPIActions.uploadProgress, (state, { id, progress }) =>
     featureAdapter.updateOne(
       {
-        id,
-        changes: { status: FileUploadStatus.Failed, progress: null, error }
+        id: id,
+        changes: { status: FileUploadStatus.InProgress, progress: progress }
       },
       state
     )
-  )
+  ),
+  on(FileUploadAPIActions.uploadCompleted, (state, { id }) =>
+    featureAdapter.updateOne(
+      {
+        id: id,
+        changes: { status: FileUploadStatus.Completed, progress: 100 }
+      },
+      state
+    )
+  ),
+  on(FileUploadAPIActions.uploadFailure, (state, { id, error }) =>
+    featureAdapter.updateOne(
+      {
+        id: id,
+        changes: {
+          status: FileUploadStatus.Failed,
+          progress: null,
+          error
+        }
+      },
+      state
+    )
+  ),
+  on(FileUploadUIActions.cancelUpload, _ => ({
+    ...initialState
+  }))
 );
 
 export function reducer(state: FileUploadState | undefined, action: Action) {
