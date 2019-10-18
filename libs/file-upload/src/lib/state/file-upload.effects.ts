@@ -41,7 +41,27 @@ export class FileUploadEffects {
     )
   );
 
-  uploadEffect$ = createEffect(() =>
+  // uploadEffect$ = createEffect(() =>
+  //   this.actions$.pipe(
+  //     ofType(FileUploadAPIActions.uploadRequested),
+  //     mergeMap(({ fileToUpload }) =>
+  //       this.fileUploadService.uploadFile(fileToUpload.rawFile).pipe(
+  //         takeUntil(this.actions$.pipe(ofType(FileUploadUIActions.cancel))),
+  //         map(event => this.getActionFromHttpEvent(fileToUpload.id, event)),
+  //         catchError(error =>
+  //           of(
+  //             FileUploadAPIActions.uploadFailed({
+  //               error: error.message,
+  //               id: fileToUpload.id
+  //             })
+  //           )
+  //         )
+  //       )
+  //     )
+  //   )
+  // );
+
+  uploadWithErrorEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(FileUploadAPIActions.uploadRequested),
       mergeMap(({ fileToUpload }) =>
