@@ -16,49 +16,24 @@
       "\tfiles.forEach(file => this.store.dispatch(FileUploadUIActions.add({ file })));",
       "",
       "\tevent.target.value = '';",
-      "}"
-    ]
-  },
-  "removeFileFromQueue": {
-    "scope": "typescript",
-    "prefix": "f3",
-    "body": [
+      "}",
+      "",
       "removeFileFromQueue(id: string) {",
       "\tthis.store.dispatch(FileUploadUIActions.remove({ id }));",
-      "}"
-    ]
-  },
-  "retryUpload": {
-    "scope": "typescript",
-    "prefix": "f4",
-    "body": [
+      "}",
+      "",
       "retryUpload(id: string) {",
       "\tthis.store.dispatch(FileUploadUIActions.retry({ id }));",
-      "}"
-    ]
-  },
-  "cancelUpload": {
-    "scope": "typescript",
-    "prefix": "f5",
-    "body": [
+      "}",
+      "",
       "cancelUpload() {",
       "\tthis.store.dispatch(FileUploadUIActions.cancel());",
-      "}"
-    ]
-  },
-  "uploadFiles": {
-    "scope": "typescript",
-    "prefix": "f6",
-    "body": [
+      "}",
+      "",
       "uploadFiles() {",
       "\tthis.store.dispatch(FileUploadUIActions.process());",
-      "}"
-    ]
-  },
-  "clearFiles": {
-    "scope": "typescript",
-    "prefix": "f7",
-    "body": [
+      "}",
+      "",
       "clearFiles() {",
       "\tthis.store.dispatch(FileUploadUIActions.clear());",
       "}"
