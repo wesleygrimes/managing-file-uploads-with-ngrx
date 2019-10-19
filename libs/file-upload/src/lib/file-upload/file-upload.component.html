@@ -10,14 +10,14 @@
       </button>
       <button
         class="btn btn-secondary upload-files"
-        (click)="uploadFiles()"
+        (click)="processRequested()"
         type="button"
       >
-        <label>Upload Files</label>
+        <label>Process Upload</label>
       </button>
       <button
         class="btn btn-secondary cancel-upload"
-        (click)="cancelUpload()"
+        (click)="cancelRequested()"
         type="button"
       >
         <label>Cancel Upload</label>
@@ -25,7 +25,7 @@
       <input
         #fileInput
         type="file"
-        (change)="onFileChange($event)"
+        (change)="fileAdded($event)"
         multiple
         class="file-input"
       />
@@ -69,7 +69,7 @@
               <fa-icon
                 *ngIf="file.canRetry"
                 [icon]="faUndo"
-                (click)="retryUpload(file.id)"
+                (click)="retryRequested(file.id)"
               ></fa-icon>
             </div>
           </td>
