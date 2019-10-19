@@ -15,7 +15,7 @@ export class FileUploadComponent {
 
   constructor(private store: Store<{}>) {}
 
-  fileAdded(event) {
+  addFiles(event) {
     const files: File[] = event.target.files ? [...event.target.files] : [];
 
     files.forEach(file =>
@@ -25,15 +25,15 @@ export class FileUploadComponent {
     event.target.value = '';
   }
 
-  retryRequested(id: string) {
+  requestRetry(id: string) {
     this.store.dispatch(FileUploadUIActions.retryRequested({ id }));
   }
 
-  cancelRequested() {
+  requestCancel() {
     this.store.dispatch(FileUploadUIActions.cancelRequested());
   }
 
-  processRequested() {
+  requestProcess() {
     this.store.dispatch(FileUploadUIActions.processRequested());
   }
 }
