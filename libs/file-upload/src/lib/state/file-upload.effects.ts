@@ -46,7 +46,9 @@ export class FileUploadEffects {
       ofType(FileUploadAPIActions.uploadRequested),
       mergeMap(({ fileToUpload }) =>
         this.fileUploadService.uploadFile(fileToUpload.rawFile).pipe(
-          takeUntil(this.actions$.pipe(ofType(FileUploadUIActions.cancel))),
+          takeUntil(
+            this.actions$.pipe(ofType(FileUploadUIActions.cancelRequested))
+          ),
           map(event => this.getActionFromHttpEvent(fileToUpload.id, event)),
           catchError(error =>
             of(
