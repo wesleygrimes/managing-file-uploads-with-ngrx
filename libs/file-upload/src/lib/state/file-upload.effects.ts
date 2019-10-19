@@ -26,7 +26,10 @@ export class FileUploadEffects {
 
   processQueueEffect$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(FileUploadUIActions.process, FileUploadUIActions.retry),
+      ofType(
+        FileUploadUIActions.processRequested,
+        FileUploadUIActions.retryRequested
+      ),
       withLatestFrom(
         this.store.select(FileUploadSelectors.selectFilesReadyForUpload)
       ),
@@ -38,32 +41,14 @@ export class FileUploadEffects {
     )
   );
 
-  // uploadEffect$ = createEffect(() =>
-  //   this.actions$.pipe(
-  //     ofType(FileUploadAPIActions.uploadRequested),
-  //     mergeMap(({ fileToUpload }) =>
-  //       this.fileUploadService.uploadFile(fileToUpload.rawFile).pipe(
-  //         takeUntil(this.actions$.pipe(ofType(FileUploadUIActions.cancel))),
-  //         map(event => this.getActionFromHttpEvent(fileToUpload.id, event)),
-  //         catchError(error =>
-  //           of(
-  //             FileUploadAPIActions.uploadFailed({
-  //               error: error.message,
-  //               id: fileToUpload.id
-  //             })
-  //           )
-  //         )
-  //       )
-  //     )
-  //   )
-  // );
-
-  uploadWithErrorEffect$ = createEffect(() =>
+  uploadEffect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(FileUploadAPIActions.uploadRequested),
       mergeMap(({ fileToUpload }) =>
-        this.fileUploadService.uploadFileError(fileToUpload.rawFile).pipe(
-          takeUntil(this.actions$.pipe(ofType(FileUploadUIActions.cancel))),
+        this.fileUploadService.uploadFile(fileToUpload.rawFile).pipe(
+          takeUntil(
+            this.actions$.pipe(ofType(FileUploadUIActions.cancelRequested))
+          ),
           map(event => this.getActionFromHttpEvent(fileToUpload.id, event)),
           catchError(error =>
             of(
@@ -101,6 +86,7 @@ export class FileUploadEffects {
           });
         }
       }
+
       default: {
         return FileUploadAPIActions.uploadFailed({
           id,

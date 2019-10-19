@@ -16,13 +16,6 @@
         <label>Upload Files</label>
       </button>
       <button
-        class="btn btn-secondary clear-files"
-        (click)="clearFiles()"
-        type="button"
-      >
-        <label>Clear Files</label>
-      </button>
-      <button
         class="btn btn-secondary cancel-upload"
         (click)="cancelUpload()"
         type="button"
@@ -39,7 +32,7 @@
     </div>
   </div>
 
-  <div class="table-responsive" *ngIf="(fileUploadQueue$ | async) as files">
+  <div class="table-responsive" *ngIf="(filesInQueue$ | async) as files">
     <table *ngIf="files.length > 0; else noFilesStaged" class="table file-list">
       <thead class="thead-light">
         <tr>
@@ -73,11 +66,6 @@
           </td>
           <td>
             <div class="file-action-buttons">
-              <fa-icon
-                *ngIf="file.canDelete"
-                (click)="removeFileFromQueue(file.id)"
-                [icon]="faTrashAlt"
-              ></fa-icon>
               <fa-icon
                 *ngIf="file.canRetry"
                 [icon]="faUndo"

@@ -17,7 +17,7 @@ export const initialState: FileUploadState = featureAdapter.getInitialState();
 
 const fileUploadReducer = createReducer(
   initialState,
-  on(FileUploadUIActions.add, (state, { file }) =>
+  on(FileUploadUIActions.added, (state, { file }) =>
     featureAdapter.addOne(
       {
         id: uuid.v4(),
@@ -31,13 +31,10 @@ const fileUploadReducer = createReducer(
       state
     )
   ),
-  on(FileUploadUIActions.clear, state =>
-    featureAdapter.removeAll({ ...state })
-  ),
-  on(FileUploadUIActions.remove, (state, { id }) =>
+  on(FileUploadUIActions.removed, (state, { id }) =>
     featureAdapter.removeOne(id, state)
   ),
-  on(FileUploadUIActions.retry, (state, { id }) =>
+  on(FileUploadUIActions.retryRequested, (state, { id }) =>
     featureAdapter.updateOne(
       {
         id,
@@ -93,7 +90,7 @@ const fileUploadReducer = createReducer(
       state
     )
   ),
-  on(FileUploadUIActions.cancel, _ => ({
+  on(FileUploadUIActions.cancelRequested, _ => ({
     ...initialState
   }))
 );
