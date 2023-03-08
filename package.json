@@ -42,7 +42,7 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.22",
     "@fortawesome/free-solid-svg-icons": "^5.10.2",
     "@nestjs/common": "^6.2.4",
-    "@nestjs/core": "^6.2.4",
+    "@nestjs/core": "^9.0.5",
     "@nestjs/platform-express": "^6.7.2",
     "@ng-bootstrap/ng-bootstrap": "^5.1.1",
     "@ngrx/effects": "^8.3.0",
